@@ -1,13 +1,4 @@
-﻿# QuickNV.YS7
-* Avaliable as [nuget](https://www.nuget.org/packages/QuickNV.YS7/) 
-
-* [![NuGet Downloads](https://img.shields.io/nuget/dt/QuickNV.YS7.svg)](https://www.nuget.org/packages/QuickNV.YS7/)
-
-* QuickNV.YS7.
-
-示例
-```
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using QuickNV.YS7;
 
 var ys7ClientOptions = JsonConvert.DeserializeObject<Ys7ClientOptions>(File.ReadAllText("config.user"));
@@ -35,4 +26,3 @@ ys7Client.NewAccessToken += (sender, e) =>
         Console.WriteLine($"通道[{channel.channelName}]的图片地址：{ret2.data.picUrl}");
     }
 }
-```

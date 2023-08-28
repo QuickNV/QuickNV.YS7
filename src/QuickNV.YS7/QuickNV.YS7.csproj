@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageProjectUrl>https://github.com/QuickNV/QuickNV.YS7</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/QuickNV/QuickNV.YS7</RepositoryUrl>
+		<Copyright />
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>scbeta</Authors>
+		<Version>1.0.0-preview1</Version>
+		<Company />
+		<Description>萤石协议</Description>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageTags>YS7</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\logo.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Epoch.net" Version="3.0.41" />
+	</ItemGroup>
+</Project>
