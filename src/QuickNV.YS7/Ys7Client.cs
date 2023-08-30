@@ -136,5 +136,65 @@ namespace QuickNV.YS7
                 dict[nameof(quality)] = quality.ToString();
             return await InvokeApiAsync<CaptureInfo>("/api/lapp/device/capture", dict);
         }
+
+        /// <summary>
+        /// 获取播放地址
+        /// </summary>
+        /// <param name="deviceSerial">设备序列号例如427734222，均采用英文符号，限制最多50个字符</param>
+        /// <param name="channelNo">通道号，非必选，默认为1</param>
+        /// <param name="protocol">流播放协议，1-ezopen、2-hls、3-rtmp、4-flv，默认为1</param>
+        /// <param name="code">ezopen协议地址的设备的视频加密密码</param>
+        /// <param name="expireTime">过期时长，单位秒；针对hls/rtmp/flv设置有效期，相对时间；30秒-720天</param>
+        /// <param name="type">地址的类型，1-预览，2-本地录像回放，3-云存储录像回放，非必选，默认为1；回放仅支持rtmp、ezopen、flv协议</param>
+        /// <param name="quality">视频清晰度，1-高清（主码流）、2-流畅（子码流）</param>
+        /// <param name="startTime">本地录像/云存储录像回放开始时间,云存储开始结束时间必须在同一天，示例：2019-12-01 00:00:00</param>
+        /// <param name="stopTime">本地录像/云存储录像回放结束时间,云存储开始结束时间必须在同一天，示例：2019-12-01 23:59:59</param>
+        /// <param name="supportH265">请判断播放端是否要求播放视频为H265编码格式,1表示需要，0表示不要求</param>
+        /// <param name="playbackSpeed">回放倍速。倍速为 -1（ 支持的最大倍速）、0.5、1、2、4、8、16；仅支持protocol为4-flv且type为2-本地录像回放（ 部分设备可能不支持16倍速） 或者 3-云存储录像回放</param>
+        /// <param name="gbchannel">国标设备的通道编号，视频通道编号ID</param>
+        /// <returns></returns>
+        public async Task<ApiResult<LiveAddressInfo>> GetLiveAddress(
+            string deviceSerial,
+            int? channelNo = null,
+            int? protocol = null,
+            string code = null,
+            int? expireTime = null,
+            string type = null,
+            VideoQuality? quality = null,
+            DateTime? startTime = null,
+            DateTime? stopTime = null,
+            int? supportH265 = null,
+            string playbackSpeed = null,
+            string gbchannel = null)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                [nameof(deviceSerial)] = deviceSerial,
+                [nameof(channelNo)] = channelNo.ToString()
+            };
+            if (channelNo.HasValue)
+                dict[nameof(channelNo)] = channelNo.ToString();
+            if (protocol.HasValue)
+                dict[nameof(protocol)] = protocol.ToString();
+            if (!string.IsNullOrEmpty(code))
+                dict[nameof(code)] = code;
+            if (expireTime.HasValue)
+                dict[nameof(expireTime)] = expireTime.ToString();
+            if (!string.IsNullOrEmpty(type))
+                dict[nameof(type)] = type;
+            if (quality.HasValue)
+                dict[nameof(quality)] = ((int)quality).ToString();
+            if (startTime.HasValue)
+                dict[nameof(startTime)] = startTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
+            if (stopTime.HasValue)
+                dict[nameof(stopTime)] = stopTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
+            if (supportH265.HasValue)
+                dict[nameof(supportH265)] = supportH265.ToString();
+            if (!string.IsNullOrEmpty(playbackSpeed))
+                dict[nameof(playbackSpeed)] = playbackSpeed;
+            if (!string.IsNullOrEmpty(gbchannel))
+                dict[nameof(gbchannel)] = gbchannel;
+            return await InvokeApiAsync<LiveAddressInfo>("/api/lapp/v2/live/address/get", dict);
+        }
     }
 }
