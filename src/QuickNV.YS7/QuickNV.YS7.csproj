@@ -29,5 +29,6 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Epoch.net" Version="3.0.41" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 </Project>

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Epoch.net;
+using Newtonsoft.Json;
 using QuickNV.YS7.Events;
 using QuickNV.YS7.Model;
 
@@ -64,7 +66,8 @@ namespace QuickNV.YS7
             var rep = await httpClient.PostAsync(apiUrl, httpContent);
             if (!rep.IsSuccessStatusCode)
                 throw new IOException($"{rep.StatusCode} {rep.ReasonPhrase}");
-            var ret = await rep.Content.ReadFromJsonAsync<ApiResult<T>>();
+            var json = await rep.Content.ReadAsStringAsync();
+            var ret = JsonConvert.DeserializeObject<ApiResult<T>>(json);
             if (!ret.IsSuccess)
                 throw new IOException($"{ret.code} {ret.msg}");
             return ret;
@@ -170,7 +173,6 @@ namespace QuickNV.YS7
             var dict = new Dictionary<string, string>
             {
                 [nameof(deviceSerial)] = deviceSerial,
-                [nameof(channelNo)] = channelNo.ToString()
             };
             if (channelNo.HasValue)
                 dict[nameof(channelNo)] = channelNo.ToString();
@@ -195,6 +197,24 @@ namespace QuickNV.YS7
             if (!string.IsNullOrEmpty(gbchannel))
                 dict[nameof(gbchannel)] = gbchannel;
             return await InvokeApiAsync<LiveAddressInfo>("/api/lapp/v2/live/address/get", dict);
+        }
+
+        /// <summary>
+        /// 失效播放地址
+        /// </summary>
+        /// <param name="deviceSerial">设备序列号例如427734222，均采用英文符号，限制最多50个字符</param>
+        /// <param name="channelNo">通道号，非必选，默认为1</param>
+        /// <param name="urlId">直播地址Id</param>
+        /// <returns></returns>
+        public async Task<ApiResult<object>> DisableLiveAddress(string deviceSerial,int channelNo, string urlId)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                [nameof(deviceSerial)] = deviceSerial,
+                [nameof(channelNo)] = channelNo.ToString(),
+                [nameof(urlId)] = urlId,
+            };
+            return await InvokeApiAsync<object>("/api/lapp/v2/live/address/disable", dict);
         }
     }
 }

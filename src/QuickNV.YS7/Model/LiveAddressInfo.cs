@@ -10,6 +10,6 @@ namespace QuickNV.YS7.Model
     {
         public string id { get; set; }
         public string url { get; set; }
-        public DateTime expireTime { get; set; }
+        public DateTime? expireTime { get; set; }
     }
 }
