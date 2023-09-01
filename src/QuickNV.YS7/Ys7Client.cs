@@ -159,7 +159,7 @@ namespace QuickNV.YS7
         public async Task<ApiResult<LiveAddressInfo>> GetLiveAddress(
             string deviceSerial,
             int? channelNo = null,
-            int? protocol = null,
+            VideoProtocol? protocol = null,
             string code = null,
             int? expireTime = null,
             string type = null,
@@ -177,7 +177,7 @@ namespace QuickNV.YS7
             if (channelNo.HasValue)
                 dict[nameof(channelNo)] = channelNo.ToString();
             if (protocol.HasValue)
-                dict[nameof(protocol)] = protocol.ToString();
+                dict[nameof(protocol)] = ((int)protocol.Value).ToString();
             if (!string.IsNullOrEmpty(code))
                 dict[nameof(code)] = code;
             if (expireTime.HasValue)
@@ -185,7 +185,7 @@ namespace QuickNV.YS7
             if (!string.IsNullOrEmpty(type))
                 dict[nameof(type)] = type;
             if (quality.HasValue)
-                dict[nameof(quality)] = ((int)quality).ToString();
+                dict[nameof(quality)] = ((int)quality.Value).ToString();
             if (startTime.HasValue)
                 dict[nameof(startTime)] = startTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
             if (stopTime.HasValue)
@@ -203,10 +203,10 @@ namespace QuickNV.YS7
         /// 失效播放地址
         /// </summary>
         /// <param name="deviceSerial">设备序列号例如427734222，均采用英文符号，限制最多50个字符</param>
-        /// <param name="channelNo">通道号，非必选，默认为1</param>
+        /// <param name="channelNo">通道号</param>
         /// <param name="urlId">直播地址Id</param>
         /// <returns></returns>
-        public async Task<ApiResult<object>> DisableLiveAddress(string deviceSerial,int channelNo, string urlId)
+        public async Task<ApiResult<object>> DisableLiveAddress(string deviceSerial, int channelNo, string urlId)
         {
             var dict = new Dictionary<string, string>
             {
@@ -215,6 +215,45 @@ namespace QuickNV.YS7
                 [nameof(urlId)] = urlId,
             };
             return await InvokeApiAsync<object>("/api/lapp/v2/live/address/disable", dict);
+        }
+
+        /// <summary>
+        /// 开始云台控制
+        /// </summary>
+        /// <param name="deviceSerial">设备序列号例如427734222，均采用英文符号，限制最多50个字符</param>
+        /// <param name="channelNo">通道号</param>
+        /// <param name="direction">操作命令：0-上，1-下，2-左，3-右，4-左上，5-左下，6-右上，7-右下，8-放大，9-缩小，10-近焦距，11-远焦距，16-自动控制</param>
+        /// <param name="speed">云台速度：0-慢，1-适中，2-快，海康设备参数不可为0</param>
+        /// <returns></returns>
+        public async Task<ApiResult<object>> StartPtz(string deviceSerial, int channelNo, PTZCommand direction, int speed)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                [nameof(deviceSerial)] = deviceSerial,
+                [nameof(channelNo)] = channelNo.ToString(),
+                [nameof(direction)] = ((int)direction).ToString(),
+                [nameof(speed)] = speed.ToString()
+            };
+            return await InvokeApiAsync<object>("/api/lapp/device/ptz/start", dict);
+        }
+
+        /// <summary>
+        /// 停止云台控制
+        /// </summary>
+        /// <param name="deviceSerial">设备序列号例如427734222，均采用英文符号，限制最多50个字符</param>
+        /// <param name="channelNo">通道号</param>
+        /// <param name="direction">操作命令：0-上，1-下，2-左，3-右，4-左上，5-左下，6-右上，7-右下，8-放大，9-缩小，10-近焦距，11-远焦距，16-自动控制</param>
+        /// <returns></returns>
+        public async Task<ApiResult<object>> StopPtz(string deviceSerial, int channelNo, PTZCommand? direction)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                [nameof(deviceSerial)] = deviceSerial,
+                [nameof(channelNo)] = channelNo.ToString()
+            };
+            if (direction.HasValue)
+                dict[nameof(direction)] = ((int)direction.Value).ToString();
+            return await InvokeApiAsync<object>("/api/lapp/device/ptz/stop", dict);
         }
     }
 }
